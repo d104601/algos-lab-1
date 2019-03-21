@@ -7,24 +7,36 @@
 public class Robbery {
 
 	// Using DP: Get the maximum value with capacity C and n items
-	public int maximizeRobWorthRecur(
-		int capacity,
-		int[] sizes,
-		int[] worths
-	) {
-		// fill in here, change the return
+	public int maximizeRobWorthRecur(int capacity, int[] sizes,	int[] worths, int n)
+	{
+		if(capacity==0 || n == 0)
 			return 0;
+		if(sizes[sizes.length-1]>capacity)
+			return maximizeRobWorthRecur(capacity,sizes,worths,n-1);
+		else
+		{
+			return Math.max(worths[n-1]+maximizeRobWorthRecur(capacity-sizes[n-1],sizes,worths,n-1),maximizeRobWorthRecur(capacity,sizes,worths,n-1));
+		}
 	}
 
-	public int maximizeRobWorthBottomUp(
-		int capacity,
-		int[] sizes,
-		int[] worths
-	) {
-		// fill in here, change the return
-		return 0;
-	}
+	public int maximizeRobWorthBottomUp(int capacity, int[] sizes, int[] worths)
+	{
+		int sack[][] = new int[sizes.length+1][capacity+1];
 
+		for(int i=1; i<=sizes.length; i++)
+		{
+			for(int j=0; j<=capacity; j++)
+			{
+				if(sizes[i-1]<=j)
+				{
+					sack[i][j] = Math.max(worths[i-1] + sack[i-1][j-sizes[i-1]], sack[i-1][j]);
+				}
+				else
+					sack[i][j]=sack[i-1][j];
+			}
+		}
+		return sack[sizes.length][capacity];
+	}
 /**
 * Bonus: figure out which items exactly
 * Takes in a DP DPTable
